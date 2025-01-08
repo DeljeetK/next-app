@@ -29,9 +29,10 @@ export async function POST(request: NextRequest) {
     // password is coming from the request
     // user.password is coming from the DB
     const validPassword = await bcryptjs.compare(password, user.password);
+    console.log(validPassword, "valid");
     // not valid password
     if (!validPassword) {
-      return NextResponse.json({ error: "Invalid password" }, { status: 400 });
+      return NextResponse.json({ error: "Invalid password", status: 401 });
     }
 
     // 4- create the TOKEN data
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
     // user's cookies
     const response = NextResponse.json({
       message: "Login Successful",
-      success: true,
+      status: 200,
     });
 
     // 4.2- send TOKEN to user's cookies

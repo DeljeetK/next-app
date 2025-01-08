@@ -8,6 +8,7 @@ import { FaAngleLeft } from 'react-icons/fa6';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 
 // Zod schema for validation
 const loginSchema = z.object({
@@ -41,9 +42,15 @@ export default function LoginPage() {
 		try {
 			setLoading(true);
 			const response = await axios.post('api/users/login', data);
-			console.log('Login successful', response.data);
-			router.push('/profile');
+			if (response?.data?.status === 200) {
+				toast.success('Login successful! Redirecting...');
+				router.push('/profile');
+			}
+			else {
+				toast.error("Invalid Credentials")
+			}
 		} catch (error: any) {
+			toast.error(error.response?.data?.message || error.message)
 			console.error('Login failed', error.response?.data?.message || error.message);
 		} finally {
 			setLoading(false);
